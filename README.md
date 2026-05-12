@@ -1,8 +1,14 @@
 # FFmpeg Online Tools
 
+<p>
+  <img src="public/branding/logo.svg" alt="" width="80" height="80" align="left" />
+</p>
+
 Free online FFmpeg toolkit running fully in your browser via [ffmpeg.wasm](https://ffmpegwasm.netlify.app/). Convert video to MP3, compress, trim, extract audio — no upload, no signup.
 
 **Live:** https://ffmpeg-online-tools.vercel.app
+
+<br clear="left" />
 
 ## What's inside
 
@@ -44,6 +50,18 @@ Built with Next.js 16, ffmpeg.wasm 0.12, Tailwind 4.
 ### Why COOP/COEP headers?
 
 ffmpeg.wasm needs `SharedArrayBuffer`, which browsers only enable in a [cross-origin isolated](https://web.dev/cross-origin-isolation-guide/) context. `next.config.ts` sets the required headers (`Cross-Origin-Opener-Policy: same-origin` + `Cross-Origin-Embedder-Policy: require-corp`) on every route.
+
+### Branding / icons
+
+The single source of truth is [`public/branding/logo.svg`](public/branding/logo.svg). Run
+
+```bash
+pnpm icons
+```
+
+to regenerate every derived asset — `favicon.ico` (16/32/48), `app/icon.svg`, `app/icon.png`, `app/apple-icon.png`, and the 192 / 512 / 1024 PNGs under `public/branding/` (manifest, social previews, etc.).
+
+The script uses `sharp` without pinning it in `package.json` — it picks up whatever copy you already have installed (project-local, `npm i -g sharp`, or even a sharp that landed via another global tool). Sharp is heavy and only used at build time, so we don't drag it into runtime deps.
 
 ## License
 

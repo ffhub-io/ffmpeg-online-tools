@@ -11,7 +11,10 @@ export function SiteHeader() {
   return (
     <header className="border-b bg-white">
       <div className="container mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="text-sm font-semibold tracking-tight">
+        <Link href="/" className="flex items-center gap-2 text-sm font-semibold tracking-tight">
+          {/* 矢量 SVG，直接当静态资源用，免去 next/image 对 SVG 的安全限制 */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/branding/logo.svg" alt="" width={24} height={24} className="rounded-md" />
           ffmpeg<span className="text-gray-400">.online</span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-gray-600 md:flex">

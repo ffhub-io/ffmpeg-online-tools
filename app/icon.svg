@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="FFmpeg Online Tools">
+  <title>FFmpeg Online Tools</title>
+  <!-- 深色圆角底，颜色取自项目 OG image 的 slate-900 -->
+  <rect width="512" height="512" rx="112" ry="112" fill="#0f172a"/>
+
+  <!-- 左侧白色 play 三角，圆角描边，避免小尺寸下顶点锯齿 -->
+  <path
+    d="M118 152 L282 256 L118 360 Z"
+    fill="#ffffff"
+    stroke="#ffffff"
+    stroke-width="22"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+
+  <!-- 右侧三根 emerald 波形条（中间高、两侧矮），所有条的几何中心都在 y=256 -->
+  <rect x="312" y="220" width="30" height="72"  rx="15" fill="#34d399"/>
+  <rect x="354" y="176" width="30" height="160" rx="15" fill="#34d399"/>
+  <rect x="396" y="208" width="30" height="96"  rx="15" fill="#34d399"/>
+</svg>
