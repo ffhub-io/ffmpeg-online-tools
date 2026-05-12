@@ -53,6 +53,9 @@ export default function Home() {
           Four common FFmpeg tools (MP3 export, audio extract, compress, format convert) with sensible
           presets. No upload, no signup, no watermark. Powered by ffmpeg.wasm.
         </p>
+        <p className="mx-auto mt-3 max-w-2xl text-sm text-gray-500">
+          Best for files under 500 MB — larger files freeze the browser tab.
+        </p>
       </section>
 
       <section className="mb-16">
@@ -88,29 +91,17 @@ export default function Home() {
       </section>
 
       <section className="mb-12 rounded-lg border bg-white p-6">
-        <h2 className="text-base font-semibold">Browser limits — when to use the cloud API</h2>
+        <h2 className="text-base font-semibold">Browser limits</h2>
         <p className="mt-2 text-sm text-gray-600">
-          ffmpeg.wasm is great for small to medium files (under ~500 MB) and common codecs.
-          You&apos;ll hit the wall when:
+          Everything runs inside your browser tab via WebAssembly. That has a few practical
+          consequences worth knowing:
         </p>
         <ul className="mt-3 space-y-1.5 text-sm text-gray-600">
-          <li>• Files are above ~500 MB (browser memory ceiling kicks in, things get slow)</li>
-          <li>• You need H.265 / HEVC, AV1, or other licensed codecs</li>
-          <li>• You want to run jobs from a script, CI pipeline, or backend</li>
-          <li>• You&apos;re processing many files in a batch</li>
+          <li>• Files above 500 MB are rejected — they tend to peg the CPU and freeze the tab</li>
+          <li>• Codecs are limited to whatever the default ffmpeg-core wasm build ships
+            (H.264, VP9, MP3, AAC, Opus, FLAC, etc.). H.265 / AV1 are not included.</li>
+          <li>• One file at a time; no batch mode</li>
         </ul>
-        <p className="mt-3 text-sm text-gray-600">
-          For any of those, the same tools run on the cloud with a REST API at{" "}
-          <a
-            href="https://www.ffhub.io?utm_source=ffmpeg-online-tools&utm_medium=referral&utm_campaign=home-info"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium text-gray-900 underline underline-offset-2"
-          >
-            ffhub.io
-          </a>
-          . 100 free credits on signup, $1 ≈ 1,000 credits, pay per second.
-        </p>
       </section>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 import { FFHubCTA } from "@/components/ffhub-cta";
@@ -8,8 +8,6 @@ import { FileInput } from "@/components/file-input";
 import { OutputCard } from "@/components/output-card";
 import { PresetCard } from "@/components/preset-card";
 import { runFFmpeg } from "@/lib/ffmpeg-runner";
-
-const SIZE_WARN_BYTES = 500 * 1024 * 1024;
 
 type PresetKey = "high" | "balanced" | "small";
 const PRESET_KEYS: PresetKey[] = ["high", "balanced", "small"];
@@ -39,8 +37,6 @@ export function CompressContent() {
     null,
   );
   const [error, setError] = useState<string | null>(null);
-
-  const isLarge = useMemo(() => !!file && file.size > SIZE_WARN_BYTES, [file]);
 
   const handleRun = async () => {
     if (!file) return;
@@ -89,13 +85,6 @@ export function CompressContent() {
           <label className="mb-2 block text-sm font-medium">Input video</label>
           <FileInput accept="video/*" onFileSelect={setFile} disabled={isRunning} />
         </div>
-
-        {isLarge && (
-          <FFHubCTA
-            variant="warn"
-            reason="Compressing big videos in the browser is slow. The cloud version handles 5 GB+ in seconds."
-          />
-        )}
 
         <div>
           <label className="mb-2 block text-sm font-medium">Quality</label>

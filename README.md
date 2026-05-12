@@ -15,16 +15,20 @@ Four common FFmpeg tasks with sensible presets:
 
 Your file is processed locally in the browser via WebAssembly — nothing uploads anywhere.
 
-## When to use this vs the cloud API
+## Limitations
 
-ffmpeg.wasm is great for small to medium files. You'll hit walls when:
+ffmpeg.wasm runs entirely in your browser tab, so it's bound by browser memory
+and CPU. In practice:
 
-- Files exceed ~500 MB (browser memory ceiling)
-- You need H.265 / HEVC, AV1, or other licensed codecs
-- You want to script jobs from CI / a backend / a worker
-- You're batch-processing many files
+- **Best for small / medium files** (under ~500 MB). Larger files can peg the
+  CPU at 100%, freeze the tab, or crash with out-of-memory.
+- **Codecs are limited** to what the default ffmpeg-core wasm build ships
+  (H.264, VP9, MP3, AAC, Opus, FLAC, etc.). H.265 / HEVC and AV1 require a
+  custom build.
+- **Single file at a time**. There's no batch / queue mode.
 
-For any of those, the same FFmpeg runs on the cloud at [ffhub.io](https://www.ffhub.io) — same syntax, REST API, generous free tier.
+For anything beyond those limits, a server-side FFmpeg setup (or a hosted
+service) is the right tool.
 
 ## Develop
 

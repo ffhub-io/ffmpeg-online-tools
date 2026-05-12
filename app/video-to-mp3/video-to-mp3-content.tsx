@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 import { FFHubCTA } from "@/components/ffhub-cta";
@@ -8,11 +8,6 @@ import { FileInput } from "@/components/file-input";
 import { OutputCard } from "@/components/output-card";
 import { PresetCard } from "@/components/preset-card";
 import { runFFmpeg } from "@/lib/ffmpeg-runner";
-
-// Files above this size show a "try the cloud version" hint. 500MB is roughly
-// the practical ceiling for ffmpeg.wasm in a browser tab — beyond that the
-// run gets slow and prone to OOM.
-const SIZE_WARN_BYTES = 500 * 1024 * 1024;
 
 type PresetKey = "high" | "standard" | "small";
 const PRESET_KEYS: PresetKey[] = ["high", "standard", "small"];
@@ -34,8 +29,6 @@ export function VideoToMp3Content() {
     null,
   );
   const [error, setError] = useState<string | null>(null);
-
-  const isLarge = useMemo(() => !!file && file.size > SIZE_WARN_BYTES, [file]);
 
   const handleRun = async () => {
     if (!file) return;
@@ -77,13 +70,6 @@ export function VideoToMp3Content() {
           <label className="mb-2 block text-sm font-medium">Input video</label>
           <FileInput accept="video/*,audio/*" onFileSelect={setFile} disabled={isRunning} />
         </div>
-
-        {isLarge && (
-          <FFHubCTA
-            variant="warn"
-            reason="Your file is over 500 MB — ffmpeg.wasm may be slow or crash in the browser. The cloud version has no upload limit."
-          />
-        )}
 
         <div>
           <label className="mb-2 block text-sm font-medium">Quality</label>
