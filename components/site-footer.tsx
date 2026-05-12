@@ -22,12 +22,12 @@ export function SiteFooter() {
               Home
             </Link>
             <a
-              href="https://www.ffhub.io?utm_source=ffmpeg-online-tools&utm_medium=referral&utm_campaign=footer"
+              href="https://github.com/ffhub-io/ffmpeg-online-tools"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-900"
             >
-              Cloud API ↗
+              GitHub ↗
             </a>
           </div>
         </div>
