@@ -3,17 +3,19 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
-// ffmpeg.wasm 跑在 Web Worker 里，单实例足够（同时跑多个任务也共享同一个 worker）。
-// 实例第一次创建时 load() 把 ~30MB 的 wasm core 下载到 blob URL，之后 reused。
+// ffmpeg.wasm runs inside a Web Worker; one instance is enough since the
+// worker serializes work internally. On first use load() pulls the ~30MB
+// wasm core into a blob URL, which is then reused.
 let instance: FFmpeg | null = null;
 let loadPromise: Promise<FFmpeg> | null = null;
 
-// 从 unpkg 拉 core。我们走 toBlobURL 把跨域 wasm 转成同源 blob URL，避免 COEP
-// require-corp 把它拦下来。
+// Pull the core from unpkg. We pipe it through toBlobURL to turn the
+// cross-origin asset into a same-origin blob URL — COEP: require-corp
+// would otherwise block it.
 const CORE_VERSION = "0.12.10";
 const CORE_BASE = `https://unpkg.com/@ffmpeg/core@${CORE_VERSION}/dist/umd`;
 
-/** 拿（懒加载的）ffmpeg 实例。多次调用共享同一实例。 */
+/** Lazily get the (singleton) ffmpeg instance. */
 export async function getFFmpeg(onLog?: (msg: string) => void): Promise<FFmpeg> {
   if (instance) return instance;
   if (loadPromise) return loadPromise;
@@ -33,41 +35,40 @@ export async function getFFmpeg(onLog?: (msg: string) => void): Promise<FFmpeg> 
 }
 
 export interface RunOptions {
-  /** 输入文件（任意来源，会喂给 ffmpeg.wasm 虚拟 FS） */
+  /** Input file from any source; written into the ffmpeg.wasm virtual FS. */
   input: File | Blob;
-  /** 输出文件名（在虚拟 FS 内的，ffmpeg 命令里也要引用这个） */
+  /** Output filename inside the virtual FS; referenced by the ffmpeg command. */
   outputName: string;
-  /** ffmpeg 命令参数，不含 `ffmpeg`、不含 `-i input` 前缀（runner 自动加） */
+  /** ffmpeg args without the `ffmpeg` binary or `-i input` prefix (runner adds them). */
   args: string[];
-  /** 实时进度（0-1） */
+  /** Progress callback (0-1). */
   onProgress?: (progress: number) => void;
-  /** 实时日志 */
+  /** Log callback. */
   onLog?: (msg: string) => void;
 }
 
 export interface RunResult {
-  /** 输出 blob */
+  /** Output blob. */
   blob: Blob;
-  /** 输出文件大小（字节） */
+  /** Output size in bytes. */
   size: number;
-  /** 处理耗时（毫秒） */
+  /** Processing duration in milliseconds. */
   durationMs: number;
 }
 
 /**
- * 跑一条 ffmpeg 命令。
+ * Run an ffmpeg command.
  *
- * 流程：
- *   1. 把 input 写到虚拟 FS 的 input.ext
- *   2. 执行 ffmpeg -i input.ext <args> outputName
- *   3. 读出 outputName 包成 Blob
- *   4. 清理虚拟 FS（避免下次跑同名文件残留旧数据）
+ * Flow:
+ *   1. Write `input` into the virtual FS as `input.bin`
+ *   2. Exec `ffmpeg -i input.bin <args> outputName`
+ *   3. Read `outputName` back as a Blob
+ *   4. Clean up the virtual FS so a later run doesn't see stale files
  */
 export async function runFFmpeg(opts: RunOptions): Promise<RunResult> {
   const ff = await getFFmpeg(opts.onLog);
 
-  // 输入文件用通用名 + 用 mime 推断后缀；ffmpeg 通过文件头识别格式，
-  // 后缀只是给虚拟 FS 用，不影响解码。
+  // ffmpeg detects format from the file header, so a generic input name is fine.
   const inputName = "input.bin";
   await ff.writeFile(inputName, await fetchFile(opts.input));
 
@@ -89,7 +90,7 @@ export async function runFFmpeg(opts: RunOptions): Promise<RunResult> {
   const data = (await ff.readFile(opts.outputName)) as Uint8Array;
   const durationMs = performance.now() - t0;
 
-  // 清理 — 同实例多次 run 之间不要残留
+  // Cleanup — don't leave artifacts between runs on the shared instance.
   await ff.deleteFile(inputName);
   await ff.deleteFile(opts.outputName);
 

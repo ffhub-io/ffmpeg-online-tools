@@ -20,7 +20,8 @@ interface Preset {
   crf: number;
 }
 
-// wasm 默认 core 带 libx264。preset 用 "fast" — 在浏览器里跑 medium/slow 会卡。
+// The default wasm core ships libx264. We force preset=fast — slower presets
+// (medium / slow) are too painful in a browser tab.
 const PRESETS: Record<PresetKey, Preset> = {
   high:     { title: "High quality",   desc: "CRF 20 — minimal quality loss, larger",         crf: 20 },
   balanced: { title: "Balanced",       desc: "CRF 23 — recommended (default in FFmpeg)",      crf: 23 },

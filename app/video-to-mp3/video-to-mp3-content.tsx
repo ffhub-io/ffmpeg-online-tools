@@ -9,8 +9,9 @@ import { OutputCard } from "@/components/output-card";
 import { PresetCard } from "@/components/preset-card";
 import { runFFmpeg } from "@/lib/ffmpeg-runner";
 
-// 大于这个值就弹"换 cloud API"提示。500MB 是 ffmpeg.wasm 在浏览器里
-// 比较稳的上限——再大很容易卡住或 OOM。
+// Files above this size show a "try the cloud version" hint. 500MB is roughly
+// the practical ceiling for ffmpeg.wasm in a browser tab — beyond that the
+// run gets slow and prone to OOM.
 const SIZE_WARN_BYTES = 500 * 1024 * 1024;
 
 type PresetKey = "high" | "standard" | "small";

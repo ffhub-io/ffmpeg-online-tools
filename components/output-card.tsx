@@ -16,7 +16,7 @@ export function OutputCard({
 }) {
   const urlRef = useRef<string>("");
 
-  // Blob URL 不释放会一直占内存。组件卸载时 revoke。
+  // Blob URLs leak memory until revoked; release on unmount.
   useEffect(() => {
     urlRef.current = URL.createObjectURL(blob);
     return () => {

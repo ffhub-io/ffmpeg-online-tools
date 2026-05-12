@@ -17,12 +17,13 @@ const FORMAT_KEYS: FormatKey[] = ["mp4", "webm", "mkv", "mov"];
 interface Format {
   title: string;
   desc: string;
-  // 默认尝试 codec copy（容器转换不重编码）。WebM 需要 VP9/Opus 编码器，
-  // 老 codec 兼容性差时 ffmpeg 会报错——这里允许指定 fallback 编码。
+  // Prefer `codec copy` (a container-only remux). WebM is the exception — its
+  // accepted video codecs (VP8/VP9/AV1) rarely match the source, so it re-encodes.
   args: string[];
 }
 
-// Container conversions. copy 不重编码，最快也无损；WebM 是例外需要 VP9 才能用 copy 不通用。
+// Container conversions. `copy` keeps the existing streams (instant, lossless);
+// WebM needs an actual re-encode since most sources don't already use VP9.
 const FORMATS: Record<FormatKey, Format> = {
   mp4: {
     title: "MP4",

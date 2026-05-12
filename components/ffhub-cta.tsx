@@ -2,10 +2,11 @@
 
 import { ExternalLink, Cloud } from "lucide-react";
 
-// 引流到 ffhub.io 的 CTA。三个出现时机（按"摩擦感"递增）：
-//   "info"   — 工具页底部恒久展示，"想跑得更快/更大文件 → 用 cloud API"
-//   "warn"   — 文件 > 阈值或选了不支持的 codec 时弹，"浏览器跑不动"
-//   "success"— 任务成功后，"如果要自动化跑这个 → 用 CLI"
+// Banner pointing users at the cloud version (ffhub.io) when the browser hits a
+// real limitation. Three contexts:
+//   "info"    — always-on footer card: "want it bigger / faster / scripted?"
+//   "warn"    — input file too large or browser can't do this codec
+//   "success" — shown after a finished run: "want to automate this in code?"
 
 const FFHUB_URL = "https://www.ffhub.io";
 const UTM = "?utm_source=ffmpeg-online-tools&utm_medium=referral";

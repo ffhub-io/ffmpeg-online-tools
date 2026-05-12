@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
-// ffmpeg.wasm 0.12+ 需要 SharedArrayBuffer，浏览器只在跨域隔离环境里启用它，
-// 必须发 COOP / COEP 头。这套配置让全站默认拿到 isolation，wasm 才能跑。
+// ffmpeg.wasm 0.12+ needs SharedArrayBuffer, which browsers only enable in a
+// cross-origin isolated context. Sending COOP + COEP on every route turns
+// isolation on globally so the wasm core can boot.
 const nextConfig: NextConfig = {
   async headers() {
     return [
